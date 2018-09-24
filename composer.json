@@ -1,7 +1,8 @@
 {
     "name": "authmagic/authmagic-timerange-stateless-laravel-middleware",
+    "type": "library",
     "description": "Authmagic timerange stateless express middleware",
-    "minimum-stability": "dev",
+    "homepage": "https://github.com/authmagic/authmagic-timerange-stateless-laravel-middleware",
     "require": {
         "guzzlehttp/guzzle": "^6.3"
     },
