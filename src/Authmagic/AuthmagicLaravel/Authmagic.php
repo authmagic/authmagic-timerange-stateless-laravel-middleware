@@ -1,11 +1,12 @@
 <?php
 
-namespace AuthMagic\AuthmagicLaravel;
+namespace Authmagic\AuthmagicLaravel;
 
 use \Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
+use GuzzleHttp\Exception\ClientException;
 
 class Authmagic
 {
@@ -19,32 +20,42 @@ class Authmagic
         $this->cacheDuration = $cacheDuration;
     }
 
+    /**
+     * Token status verification.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return mixed
+     */
     public function auth(Request $request)
     {
         $authorization = $request->header('Authorization');
 
         if ($authorization) {
-            $token = array_pop(explode(' ', $authorization));
+            $tokenArray = explode(' ', $authorization);
+            $token = array_pop($tokenArray);
 
             if (!Cache::get($token)) {
                 $client = new Client();
-                $response = $client->post($this->url, [
-                    'headers' => ['Content-Type' => 'application/json'],
-                    'form_params' => [
-                        'token' => $token,
-                    ],
-                ]);
+
+                try {
+                    $response = $client->post($this->url, [
+                        'headers' => ['Content-Type' => 'application/json'],
+                        'body' => json_encode(['token' => $token]),
+                    ]);
+                } catch (ClientException $exception) {
+                    $response = $exception->getResponse();
+                }
 
                 if ($response->getStatusCode() === Response::HTTP_OK) {
-                    Cache::put($token, $this->cacheDuration);
+                    Cache::put($token, true, $this->cacheDuration);
                 }
             }
 
             if (Cache::get($token)) {
-                return true;
+                return $token;
             }
         }
 
-        return false;
+        return null;
     }
 }
