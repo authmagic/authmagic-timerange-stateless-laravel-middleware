@@ -1,6 +1,6 @@
 <?php
 
-namespace AuthMagic\AuthmagicLaravel;
+namespace Authmagic\AuthmagicLaravel;
 
 use Illuminate\Support\ServiceProvider;
 

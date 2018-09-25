@@ -21,10 +21,20 @@ $ php artisan vendor:publish --provider="Authmagic\AuthmagicLaravel\AuthmagicSer
 
 Usage
 -----------
+Create middleware with handle method.
 ```php
-if (Authmagic::auth()) {
-    // ...
-}
+    public function handle($request, Closure $next)
+    {
+        $token = Authmagic::auth($request);
+
+        if ($token) {
+            // ...
+
+            return $next($request);
+        }
+
+        return response('Unauthorized action', Response::HTTP_FORBIDDEN);
+    }
 ```
 
 Licence
