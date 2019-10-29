@@ -2,6 +2,7 @@
 
 namespace Authmagic\AuthmagicLaravel;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 
 class AuthmagicServiceProvider extends ServiceProvider
@@ -32,8 +33,8 @@ class AuthmagicServiceProvider extends ServiceProvider
             $config = $app->config->get(static::$alias);
 
             return new Authmagic(
-                array_get($config, 'url'),
-                array_get($config, 'cache_duration')
+                Arr::get($config, 'url'),
+                Arr::get($config, 'cache_duration')
             );
         });
     }
